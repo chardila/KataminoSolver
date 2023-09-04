@@ -1,5 +1,6 @@
-import numpy as np
 import json
+
+import numpy as np
 
 
 # Define a function to rotate a piece 90 degrees.
@@ -66,15 +67,28 @@ def solve_katamino(board, pieces_parameter):
     return None  # No solution found
 
 
+def load_puzzle_settings(filename):
+    try:
+        with open(filename, 'r') as file:
+            settings = json.load(file)
+            return settings
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None
+
+
 # Main function
 def main():
     # Load settings from a JSON file
-    with open("settings.json", "r") as settings_file:
-        settings = json.load(settings_file)
+    settings_filename = "settings.json"
+    puzzle_settings = load_puzzle_settings(settings_filename)
 
-    n_rows = settings["n_rows"]
-    n_cols = settings["n_cols"]
-    pieces = [np.array(piece) for piece in settings["pieces"]]
+    if puzzle_settings is None:
+        print(f"Error: Unable to load puzzle settings from '{settings_filename}'.")
+        return
+
+    n_rows = puzzle_settings["n_rows"]
+    n_cols = puzzle_settings["n_cols"]
+    pieces = [np.array(piece) for piece in puzzle_settings["pieces"]]
 
     # Create an empty array of size n_rows by n_cols filled with zeros
     empty_array = np.zeros((n_rows, n_cols), dtype=int)
