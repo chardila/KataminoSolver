@@ -76,6 +76,10 @@ def load_puzzle_settings(filename):
         return None
 
 
+def print_solution(solution):
+    print(solution)
+
+
 # Main function
 def main():
     # Load settings from a JSON file
@@ -83,22 +87,30 @@ def main():
     puzzle_settings = load_puzzle_settings(settings_filename)
 
     if puzzle_settings is None:
-        print(f"Error: Unable to load puzzle settings from '{settings_filename}'.")
+        print(f"Unable to load puzzle settings from '{settings_filename}'.")
         return
 
-    n_rows = puzzle_settings["n_rows"]
-    n_cols = puzzle_settings["n_cols"]
+    n_rows = puzzle_settings.get("n_rows")
+    n_cols = puzzle_settings.get("n_cols")
+
+    if n_rows is None or n_cols is None:
+        print("The 'n_rows' or 'n_cols' key is missing in the puzzle settings.")
+        return
+
+    if "pieces" not in puzzle_settings:
+        print("The 'pieces' key is missing in the puzzle settings.")
+        return
+
     pieces = [np.array(piece) for piece in puzzle_settings["pieces"]]
 
     # Create an empty array of size n_rows by n_cols filled with zeros
-    empty_array = np.zeros((n_rows, n_cols), dtype=int)
-    puzzle_board = empty_array
+    puzzle_board = np.zeros((n_rows, n_cols), dtype=int)
 
     # Solve the Katamino puzzle and print the result.
     solution = solve_katamino(puzzle_board.copy(), pieces)
     if solution is not None:
         print("Solution:")
-        print(solution)
+        print_solution(solution)
     else:
         print("No solution found.")
 
