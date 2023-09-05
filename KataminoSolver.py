@@ -80,7 +80,38 @@ def print_solution(solution):
 
 
 # Main function
+def create_puzzle_board(n_rows, n_cols):
+    """
+    Create an empty array of size n_rows by n_cols filled with zeros.
+
+    Args:
+        n_rows (int): The number of rows in the puzzle board.
+        n_cols (int): The number of columns in the puzzle board.
+
+    Returns:
+        numpy.ndarray: The puzzle board array.
+    """
+    return np.zeros((n_rows, n_cols), dtype=int)
+
+
+def solve_katamino_puzzle(puzzle_board, pieces):
+    """
+    Solve the Katamino puzzle.
+
+    Args:
+        puzzle_board (numpy.ndarray): The puzzle board array.
+        pieces (list): The list of puzzle pieces.
+
+    Returns:
+        numpy.ndarray or None: The solution if found, None otherwise.
+    """
+    return solve_katamino(puzzle_board.copy(), pieces)
+
+
 def main():
+    """
+    Main function to load puzzle settings, create the puzzle board, solve the Katamino puzzle, and print the result.
+    """
     # Load settings from a JSON file
     settings_filename = "settings.json"
     puzzle_settings = load_puzzle_settings(settings_filename)
@@ -102,11 +133,11 @@ def main():
 
     pieces = [np.array(piece) for piece in puzzle_settings["pieces"]]
 
-    # Create an empty array of size n_rows by n_cols filled with zeros
-    puzzle_board = np.zeros((n_rows, n_cols), dtype=int)
+    # Create the puzzle board
+    puzzle_board = create_puzzle_board(n_rows, n_cols)
 
     # Solve the Katamino puzzle and print the result.
-    solution = solve_katamino(puzzle_board.copy(), pieces)
+    solution = solve_katamino_puzzle(puzzle_board, pieces)
     if solution is not None:
         print("Solution:")
         print_solution(solution)
