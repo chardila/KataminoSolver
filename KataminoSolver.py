@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import random
 
 
 # Define a function to rotate a piece 90 degrees.
@@ -21,6 +22,14 @@ def can_place(board, piece, x, y):
         for i in range(width)
         for j in range(height)
     )
+
+
+def place_piece_with_value(board, piece, x, y, piece_value):
+    piece_height, piece_width = piece.shape
+    for i in range(piece_height):
+        for j in range(piece_width):
+            if piece[i, j] != 0:
+                board[y + i, x + j] = piece_value
 
 
 # Function to place a piece on the board at a given position.
@@ -55,7 +64,9 @@ def solve_katamino(board, pieces_parameter):
     for piece in pieces_parameter:
         for _ in range(4):  # Rotate the piece 4 times
             if can_place(board, piece, x, y):
-                place_piece(board, piece, x, y)
+                # place_piece(board, piece, x, y)
+                rand = random.randint(1, 7)
+                place_piece_with_value(board, piece, x, y, rand)
                 solution_parameter = solve_katamino(board, pieces_parameter)
                 if solution_parameter is not None:
                     return solution_parameter
@@ -76,7 +87,22 @@ def load_puzzle_settings(filename):
 
 
 def print_solution(solution):
-    print(solution)
+    color_mapping = {
+        0: '\033[0m',  # Reset color
+        1: '\033[91m',  # Red
+        2: '\033[92m',  # Green
+        3: '\033[93m',  # Yellow
+        4: '\033[94m',  # Blue
+        5: '\033[95m',  # Purple
+        6: '\033[96m',  # Cyan
+        7: '\033[97m',  # White
+    }
+
+    for row in solution:
+        for cell in row:
+            color_code = color_mapping.get(cell, '\033[0m')  # Default to reset color
+            print(color_code + str(cell), end=' ')
+        print('\033[0m')  # Reset color at the end of each row
 
 
 # Main function
